@@ -62,7 +62,7 @@ function main() {
   }
 
   try {
-    console.log(`Storing artifacts for branch: ${branchName}`)
+    console.log(`Storing artifacts for branch '${branchName}'...`)
 
     // Check if `artifacts` branch exists
     let artifactsExists
@@ -75,7 +75,7 @@ function main() {
 
     if (!artifactsExists) {
       // The orphan branch doesn't already exist, so created it now
-      console.log(`Creating orphan '${artifactsBranchName}' branch`)
+      console.log(`Creating orphan '${artifactsBranchName}' branch...`)
       execSync(`git checkout --orphan ${artifactsBranchName}`, { stdio: 'inherit' })
 
       // Add a `.gitignore` file that ignores the `staged` directory
@@ -83,19 +83,19 @@ function main() {
       console.log(`Created .gitignore file for '${artifactsBranchName}' branch`)
     } else {
       // Switch to the existing `artifacts` branch
-      console.log(`Switching to existing '${artifactsBranchName}' branch`)
+      console.log(`Switching to existing '${artifactsBranchName}' branch...`)
       execSync(`git checkout ${artifactsBranchName}`, { stdio: 'inherit' })
     }
 
     // Remove existing branch directory if it exists
     const currentBranchDir = joinPath(artifactsDir, 'branch', branchName)
     if (existsSync(currentBranchDir)) {
-      console.log(`Removing existing branch directory: ${currentBranchDir}`)
+      console.log(`Removing existing branch directory '${currentBranchDir}'...`)
       rmSync(currentBranchDir, { recursive: true })
     }
 
     // Copy staged files to branch directory
-    console.log(`Copying staged files from '${stagedDir}' to '${currentBranchDir}'`)
+    console.log(`Copying staged files from '${stagedDir}' to '${currentBranchDir}'...`)
     cpSync(stagedDir, currentBranchDir, { recursive: true })
 
     // Update `metadata/index.json`
@@ -110,10 +110,10 @@ function main() {
     // For main branch, also copy app files to top-level `latest` directory
     if (branchName === 'main') {
       if (existsSync('latest')) {
-        console.log(`Removing existing 'latest' directory`)
+        console.log(`Removing existing 'latest' directory...`)
         rmSync('latest', { recursive: true })
       }
-      console.log(`Copying main branch app files to 'latest' directory`)
+      console.log(`Copying main branch app files to 'latest' directory...`)
       const stagedAppSrcDir = joinPath(stagedDir, 'app')
       const stagedAppDstDir = joinPath(artifactsDir, 'latest')
       cpSync(stagedAppSrcDir, stagedAppDstDir, { recursive: true })
@@ -130,11 +130,11 @@ function main() {
       // There are changes, commit them
       const commitMessage = `build: update artifacts for branch ${branchName}`
       execSync(`git commit -m "${commitMessage}"`, { stdio: 'inherit' })
-      console.log(`Committed artifacts for branch: ${branchName}`)
+      console.log(`Committed artifacts for branch: '${branchName}'...`)
     }
 
     // Push to remote
-    console.log(`Pushing '${artifactsBranchName}' branch to remote`)
+    console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
     execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
 
     console.log(`✅ Successfully stored artifacts for branch: ${branchName}`)
@@ -159,7 +159,7 @@ function updateMetadata(branchName, paths) {
     try {
       metadata = JSON.parse(readFileSync(metadataFile, 'utf8'))
     } catch (e) {
-      console.warn('⚠️  Could not parse existing metadata, starting fresh')
+      console.warn('⚠️ Could not parse existing metadata, starting fresh')
       metadata = []
     }
   }
@@ -182,7 +182,7 @@ function updateMetadata(branchName, paths) {
 
   // Write updated metadata
   writeFileSync(metadataFile, JSON.stringify(metadata, null, 2))
-  console.log(`📝 Updated metadata for branch: ${branchName}`)
+  console.log(`Updated metadata for branch '${branchName}'`)
 }
 
 main()
