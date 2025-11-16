@@ -223,7 +223,7 @@ function updateMetadata(branchName, paths) {
   }
 
   // Remove existing entry for this branch
-  metadata = metadata.filter(entry => entry.path !== branchName)
+  metadata = metadata.filter(entry => entry.name !== branchName)
 
   // Add new entry
   const newEntry = {
