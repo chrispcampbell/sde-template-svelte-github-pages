@@ -62,6 +62,43 @@ function main() {
   }
 
   try {
+    // Check if the project is already set up for GitHub Pages
+    console.log('Checking if GitHub Pages is configured for this repo...')
+    const ownerAndRepo = process.env.GITHUB_REPOSITORY
+    if (!ownerAndRepo) {
+      throw new Error('GITHUB_REPOSITORY environment variable must be set')
+    }
+    const ghAccept = '"Accept: application/vnd.github+json"'
+    const ghApiVersion = '"X-GitHub-Api-Version: 2022-11-28"'
+    const ghPagesApiPath = `/repos/${ownerAndRepo}/pages`
+    let isGitHubPagesSetup
+    try {
+      const pagesResponse = execSync(`gh api -H ${ghAccept} -H ${ghApiVersion} ${ghPagesApiPath}`)
+      const pagesMetadata = JSON.parse(pagesResponse)
+      isGitHubPagesSetup = pagesMetadata.build_type === 'workflow'
+      if (!isGitHubPagesSetup) {
+        console.log(
+          'GitHub Pages is not configured to use workflow builds for this repo, but found existing configuration:'
+        )
+        console.log('  build_type:   ', pagesMetadata.build_type)
+        console.log('  source.branch:', pagesMetadata.source?.branch)
+        console.log('  source.path:  ', pagesMetadata.source?.path)
+      }
+    } catch (e) {
+      console.log('No existing GitHub Pages configuration found')
+      isGitHubPagesSetup = false
+    }
+
+    // If the project is not set up for GitHub Pages, set it up now
+    if (!isGitHubPagesSetup) {
+      console.log('Setting up GitHub Pages to use workflow builds for this repo...')
+      const pagesArgs = `-f 'build_type=workflow'`
+      execSync(`gh api -X PUT -H ${ghAccept} -H ${ghApiVersion} ${ghPagesApiPath} ${pagesArgs}`, { stdio: 'inherit' })
+      console.log('GitHub Pages is now configured for this repo')
+    } else {
+      console.log('GitHub Pages is already configured for this repo')
+    }
+
     console.log(`Storing artifacts for branch '${branchName}'...`)
 
     // Check if `artifacts` branch exists
@@ -85,12 +122,7 @@ function main() {
 
       // Add a `.gitignore` file that ignores everything except the `artifacts` directory
       // and the `.gitignore` file itself
-      const ignoredFiles = [
-        '*',
-        '!artifacts',
-        '!artifacts/**',
-        '!.gitignore'
-      ]
+      const ignoredFiles = ['*', '!artifacts', '!artifacts/**', '!.gitignore']
       writeFileSync('.gitignore', ignoredFiles.join('\n'))
       execSync('git add .gitignore', { stdio: 'inherit' })
       console.log(`Created .gitignore file for '${artifactsBranchName}' branch`)
@@ -113,10 +145,12 @@ function main() {
 
     // Update `metadata/index.json`
     // TODO: This should be kept in sync with the `ci-build.js` script
+    const currentBranchUrlPath = `branch/${branchName}`
     const paths = {
-      app: `${currentBranchDir}/app`,
-      checkReport: `${currentBranchDir}/extras/check-compare-to-base`,
-      checkBundle: `${currentBranchDir}/extras/check-bundle.js`
+      branch: currentBranchUrlPath,
+      app: `${currentBranchUrlPath}/app`,
+      checkReport: `${currentBranchUrlPath}/extras/check-compare-to-base`,
+      checkBundle: `${currentBranchUrlPath}/extras/check-bundle.js`
     }
     updateMetadata(branchName, paths)
 
@@ -146,9 +180,9 @@ function main() {
       console.log(`Committed artifacts for branch '${branchName}'...`)
     }
 
-    // // Push to remote
-    // console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
-    // execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
+    // Push to remote
+    console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
+    execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
 
     console.log(`✅ Successfully stored artifacts for branch '${branchName}'`)
   } catch (error) {
@@ -158,7 +192,7 @@ function main() {
 }
 
 /**
- * Update the `metadata/index.json` file with the new branch name and check bundle path.
+ * Update the `metadata/index.json` file with the URL paths for the branch and its artifacts.
  */
 function updateMetadata(branchName, paths) {
   const metadataDir = joinPath(artifactsDir, 'metadata')
@@ -182,7 +216,8 @@ function updateMetadata(branchName, paths) {
 
   // Add new entry
   const newEntry = {
-    path: branchName,
+    name: branchName,
+    path: paths.branch,
     app: paths.app,
     checkReport: paths.checkReport,
     checkBundle: paths.checkBundle,
