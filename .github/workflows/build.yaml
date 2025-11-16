@@ -17,6 +17,7 @@ on:
 # Set the GITHUB_TOKEN permissions to allow pushing to the `artifacts` branch
 permissions:
   contents: write
+  pages: write
 
 # Allow one concurrent build
 concurrency:
