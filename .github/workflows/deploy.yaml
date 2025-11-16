@@ -2,23 +2,26 @@
 
 name: Deploy
 
+# Run when the `Build` workflow completes (we only run the job on successful builds
+# using the `if` condition on the job below)
 on:
-  push:
-    branches:
-      - 'artifacts'
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
 
 # Set the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
 
-# Allow one concurrent build+deployment
+# Allow one concurrent deployment
 concurrency:
-  group: 'pages'
+  group: 'deploy'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5

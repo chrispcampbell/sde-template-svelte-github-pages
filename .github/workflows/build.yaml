@@ -18,9 +18,9 @@ on:
 permissions:
   contents: write
 
-# Allow one concurrent build+deployment
+# Allow one concurrent build
 concurrency:
-  group: 'pages'
+  group: 'build'
 
 jobs:
   build:
