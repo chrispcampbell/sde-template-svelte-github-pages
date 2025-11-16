@@ -78,8 +78,21 @@ function main() {
       console.log(`Creating orphan '${artifactsBranchName}' branch...`)
       execSync(`git checkout --orphan ${artifactsBranchName}`, { stdio: 'inherit' })
 
-      // Add a `.gitignore` file that ignores the `staged` directory
-      writeFileSync('.gitignore', 'staged\n')
+      // By default, the new branch will inherit the contents of the current branch
+      // (i.e., the contents will be git added), but we only want to keep the `artifacts`
+      // directory, so unstage all cached files first
+      execSync('git rm -rf --cached .', { stdio: 'inherit' })
+
+      // Add a `.gitignore` file that ignores everything except the `artifacts` directory
+      // and the `.gitignore` file itself
+      const ignoredFiles = [
+        '*',
+        '!artifacts',
+        '!artifacts/**',
+        '!.gitignore'
+      ]
+      writeFileSync('.gitignore', ignoredFiles.join('\n'))
+      execSync('git add .gitignore', { stdio: 'inherit' })
       console.log(`Created .gitignore file for '${artifactsBranchName}' branch`)
     } else {
       // Switch to the existing `artifacts` branch
@@ -133,9 +146,9 @@ function main() {
       console.log(`Committed artifacts for branch '${branchName}'...`)
     }
 
-    // Push to remote
-    console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
-    execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
+    // // Push to remote
+    // console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
+    // execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
 
     console.log(`✅ Successfully stored artifacts for branch '${branchName}'`)
   } catch (error) {
