@@ -119,8 +119,8 @@ function main() {
       cpSync(stagedAppSrcDir, stagedAppDstDir, { recursive: true })
     }
 
-    // Add all files to git
-    execSync('git add .', { stdio: 'inherit' })
+    // Add all updated files in the `artifacts` directory to git
+    execSync(`git add ${artifactsDir}`, { stdio: 'inherit' })
 
     // Check if there are changes to commit
     try {
