@@ -111,7 +111,11 @@ function main() {
     // Check if `artifacts` branch exists
     let artifactsExists
     try {
-      execSync(`git show-ref --verify --quiet refs/heads/${artifactsBranchName}`, { stdio: 'ignore' })
+      // This will fail if the branch doesn't exist yet, which is what we want.  This
+      // assumes that the checkout action step in the `build` workflow was configured
+      // with `fetch-depth: 0` to fetch full history.
+      const branchRef = `refs/remotes/origin/${artifactsBranchName}`
+      execSync(`git show-ref --verify --quiet ${branchRef}`, { stdio: 'ignore' })
       artifactsExists = true
     } catch (e) {
       artifactsExists = false
