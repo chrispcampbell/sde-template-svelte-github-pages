@@ -57,7 +57,7 @@ function main() {
   }
 
   if (!existsSync(stagedDir)) {
-    console.error(`ERROR: Staged directory "${stagedDir}" does not exist`)
+    console.error(`ERROR: Staged directory '${stagedDir}' does not exist`)
     process.exit(1)
   }
 
@@ -130,14 +130,14 @@ function main() {
       // There are changes, commit them
       const commitMessage = `build: update artifacts for branch ${branchName}`
       execSync(`git commit -m "${commitMessage}"`, { stdio: 'inherit' })
-      console.log(`Committed artifacts for branch: '${branchName}'...`)
+      console.log(`Committed artifacts for branch '${branchName}'...`)
     }
 
     // Push to remote
     console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
     execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
 
-    console.log(`✅ Successfully stored artifacts for branch: ${branchName}`)
+    console.log(`✅ Successfully stored artifacts for branch '${branchName}'`)
   } catch (error) {
     console.error('❌ Error storing artifacts:', error.message)
     process.exit(1)
