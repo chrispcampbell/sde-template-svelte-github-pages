@@ -75,6 +75,33 @@ directory, and have built the local packages with `pnpm build`.
 pnpm dev
 ```
 
+## Deployment
+
+This project automatically publishes your simulator and model-check reports to a public website whenever you push changes to GitHub.
+
+### Automatic Publishing
+
+- **Every time you push changes** to any branch on GitHub, a workflow automatically runs.
+- **Your simulator becomes available online** at a public web address that anyone can visit.
+- **The model-check reports for your branch are also published** alongside your simulator for easy access.
+- **No manual steps required** - everything happens automatically in GitHub Actions.
+
+### Accessing Your Published Simulator
+
+- **Main branch**: Your latest simulator app build for the `main` branch is available at `https://yourusername.github.io/your-project-name/latest`
+- **Other branches**: Each branch gets its own URL (e.g., `https://yourusername.github.io/your-project-name/branch/feature-name`)
+  - The app build for the branch is available at `https://yourusername.github.io/your-project-name/branch/feature-name/app`
+  - A model-check report that compares the branch to the latest `main` build will be available at `https://yourusername.github.io/your-project-name/branch/feature-name/extras/check-compare-to-base`
+  - The model-check bundle file will be available `https://yourusername.github.io/your-project-name/branch/feature-name/extras/check-bundle.js`
+
+### Sharing Your Work
+
+Once published, you can share the web address with anyone. They can:
+
+- Use your simulator directly in their web browser
+- View the model-check reports to understand how the model on one branch compares to another version of the model
+- Access different versions if you're working on multiple features or other changes in parallel
+
 ## License
 
 SDEverywhere is distributed under the MIT license. See `LICENSE` for more details.
