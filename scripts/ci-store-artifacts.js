@@ -88,15 +88,22 @@ function main() {
       console.log('No existing GitHub Pages configuration found')
       isGitHubPagesSetup = false
     }
-
-    // If the project is not set up for GitHub Pages, set it up now
-    if (!isGitHubPagesSetup) {
-      console.log('Setting up GitHub Pages to use workflow builds for this repo...')
-      const pagesArgs = `-f 'build_type=workflow'`
-      execSync(`gh api -X PUT -H ${ghAccept} -H ${ghApiVersion} ${ghPagesApiPath} ${pagesArgs}`, { stdio: 'inherit' })
-      console.log('GitHub Pages is now configured for this repo')
-    } else {
+    if (isGitHubPagesSetup) {
       console.log('GitHub Pages is already configured for this repo')
+    } else {
+      // XXX: Ideally we would set up GitHub Pages automatically using the GitHub API,
+      // but that requires "administration" permissions, which are not available for
+      // the standard GITHUB_TOKEN.  Using a PAT would be even more work, so for now,
+      // show instructions and fail the build.
+      console.error('ERROR: GitHub Pages is not configured for this repo.')
+      console.error('For now, you must manually enable GitHub Pages as follows:')
+      console.error('  1. Go to the GitHub repository settings')
+      console.error('  2. In the sidebar, select "Pages"')
+      console.error('  3. Under "Build and deployment", change "Source" to "GitHub Actions"')
+      console.error('  4. In the tab bar, select "Actions"')
+      console.error('  5. Click on the most recent failed workflow run')
+      console.error('  6. In the upper right corner, click "Re-run jobs" then "Re-run all jobs"')
+      process.exit(1)
     }
 
     console.log(`Storing artifacts for branch '${branchName}'...`)
