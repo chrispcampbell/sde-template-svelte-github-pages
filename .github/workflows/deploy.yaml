@@ -2,12 +2,14 @@
 
 name: Deploy
 
-# Run when the `Build` workflow completes (we only run the job on successful builds
-# using the `if` condition on the job below)
 on:
+  # Run when the `Build` workflow completes (we only run the job on successful builds
+  # using the `if` condition on the job below)
   workflow_run:
     workflows: [Build]
     types: [completed]
+  # Allow for running this workflow manually from the Actions tab
+  workflow_dispatch:
 
 # Set the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
@@ -25,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: artifacts
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
