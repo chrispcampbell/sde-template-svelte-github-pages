@@ -1,0 +1,56 @@
+#
+# This workflow builds the app and model-check reports, then stores them in an `artifacts` branch.
+#
+
+name: Build
+
+on:
+  # Run this workflow on every push to any branch except the special `artifacts` branch
+  push:
+    branches:
+      - '**'
+      - '!artifacts'
+
+  # Allows for running this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Set the GITHUB_TOKEN permissions to allow pushing to the `artifacts` branch
+permissions:
+  contents: write
+
+# Allow one concurrent build+deployment
+concurrency:
+  group: 'pages'
+
+jobs:
+  build:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          # Fetch full history for artifact branch operations
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Validate branch name
+        run: ./scripts/validate-branch-name.js ${{ github.ref_name }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: ./scripts/ci-build.js
+
+      - name: Store artifacts in orphan branch
+        run: ./scripts/store-artifacts.js ${{ github.ref_name }} ./staged
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
