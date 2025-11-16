@@ -51,6 +51,6 @@ jobs:
         run: ./scripts/ci-build.js
 
       - name: Store artifacts in orphan branch
-        run: ./scripts/store-artifacts.js ${{ github.ref_name }} ./staged
+        run: ./scripts/ci-store-artifacts.js ${{ github.ref_name }} ./staged
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
