@@ -5,14 +5,22 @@
     "app": "branch/main/app",
     "checkReport": "branch/main/extras/check-compare-to-base",
     "checkBundle": "branch/main/extras/check-bundle.js",
-    "lastModified": "2025-11-16T22:20:08.407Z"
+    "lastModified": "2025-11-21T20:00:55.457Z"
   },
   {
-    "name": "main",
-    "path": "branch/main",
-    "app": "branch/main/app",
-    "checkReport": "branch/main/extras/check-compare-to-base",
-    "checkBundle": "branch/main/extras/check-bundle.js",
-    "lastModified": "2025-11-16T20:37:17.633Z"
+    "name": "chris/test2",
+    "path": "branch/chris/test2",
+    "app": "branch/chris/test2/app",
+    "checkReport": "branch/chris/test2/extras/check-compare-to-base",
+    "checkBundle": "branch/chris/test2/extras/check-bundle.js",
+    "lastModified": "2025-11-17T01:02:58.684Z"
+  },
+  {
+    "name": "chris/test1",
+    "path": "branch/chris/test1",
+    "app": "branch/chris/test1/app",
+    "checkReport": "branch/chris/test1/extras/check-compare-to-base",
+    "checkBundle": "branch/chris/test1/extras/check-bundle.js",
+    "lastModified": "2025-11-17T00:57:29.787Z"
   }
 ]
