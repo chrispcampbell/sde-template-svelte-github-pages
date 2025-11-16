@@ -11,7 +11,7 @@ on:
       - '**'
       - '!artifacts'
 
-  # Allows for running this workflow manually from the Actions tab
+  # Allow for running this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Set the GITHUB_TOKEN permissions to allow pushing to the `artifacts` branch
