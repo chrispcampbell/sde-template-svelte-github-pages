@@ -38,7 +38,7 @@
 
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, cpSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, join as joinPath } from 'node:path'
+import { join as joinPath } from 'node:path'
 
 const artifactsBranchName = 'artifacts'
 const artifactsDir = 'artifacts'
@@ -148,8 +148,8 @@ function main() {
  * Update the `metadata/index.json` file with the new branch name and check bundle path.
  */
 function updateMetadata(branchName, paths) {
-  const metadataFile = joinPath('metadata', 'index.json')
-  const metadataDir = dirname(metadataFile)
+  const metadataDir = joinPath(artifactsDir, 'metadata')
+  const metadataFile = joinPath(metadataDir, 'index.json')
 
   // Create metadata directory if it doesn't exist
   mkdirSync(metadataDir, { recursive: true })
