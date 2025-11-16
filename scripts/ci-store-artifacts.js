@@ -171,6 +171,7 @@ function updateMetadata(branchName, paths) {
   const newEntry = {
     path: branchName,
     app: paths.app,
+    checkReport: paths.checkReport,
     checkBundle: paths.checkBundle,
     lastModified: new Date().toISOString()
   }
