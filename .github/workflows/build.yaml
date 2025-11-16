@@ -1,5 +1,6 @@
 #
-# This workflow builds the app and model-check reports, then stores them in an `artifacts` branch.
+# This workflow builds the app and model-check reports, stores them in the `artifacts` branch,
+# then deploys the updated `artifacts` directory to GitHub Pages.
 #
 
 name: Build
@@ -10,14 +11,16 @@ on:
     branches:
       - '**'
       - '!artifacts'
-
   # Allow for running this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Set the GITHUB_TOKEN permissions to allow pushing to the `artifacts` branch
+# Set the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
+  # Allow pushing to the `artifacts` branch
   contents: write
+  # Allow deployment to GitHub Pages
   pages: write
+  id-token: write
 
 # Allow one concurrent build
 concurrency:
@@ -62,3 +65,18 @@ jobs:
         run: ./scripts/ci-store-artifacts.js ${{ github.ref_name }} ./staged
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # NOTE: This assumes that the "Store artifacts in orphan branch" step above has
+      # already checked out the `artifacts` branch and left it as the current branch
+      # (so that the `artifacts` directory is available and up to date)
+      - name: Upload GitHub Pages artifacts
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: './artifacts'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
