@@ -1,0 +1,10 @@
+[
+  {
+    "name": "main",
+    "path": "branch/main",
+    "app": "branch/main/app",
+    "checkReport": "branch/main/extras/check-compare-to-base",
+    "checkBundle": "branch/main/extras/check-bundle.js",
+    "lastModified": "2025-11-16T20:37:17.633Z"
+  }
+]
