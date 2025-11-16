@@ -50,6 +50,13 @@ jobs:
       - name: Build
         run: ./scripts/ci-build.js
 
+      - name: Configure git user
+        run: |
+          # Configure git so that the commit in the following step is attributed to
+          # the current user
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
       - name: Store artifacts in orphan branch
         run: ./scripts/ci-store-artifacts.js ${{ github.ref_name }} ./staged
         env:
