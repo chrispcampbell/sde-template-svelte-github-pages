@@ -50,6 +50,9 @@
   </style>
   <script>
   function formatDate(isoString) {
+    if (isoString.length === 0) {
+      return 'n/a'
+    }
     const date = new Date(isoString)
     const dateString = date.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' })
     const timeString = date.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit' })
@@ -69,7 +72,9 @@
 </head>
 <body>
   <div class="container">
-    <a href="/latest">Latest production app</a>
+    <a href="latest">Latest production app</a>
+    <br />
+    (last updated: <span class="date" data-timestamp="2025-11-21T20:11:25.707Z"></span>)
     <hr />
     <div class="grid">
       <div class="header">Branch</div>
@@ -85,7 +90,7 @@
           </div>
         </div>
         <div class="cell">
-          <span class="date" data-timestamp="2025-11-21T20:00:55.457Z"></span>
+          <span class="date" data-timestamp="2025-11-21T20:11:25.707Z"></span>
         </div>
       </div>
       <div class="row">
