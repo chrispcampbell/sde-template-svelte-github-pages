@@ -254,13 +254,6 @@ function updateMetadata(branchName, paths) {
 function generateIndexHtml(metadata) {
   const indexHtmlPath = joinPath(artifactsDir, 'index.html')
 
-  const formatDate = isoString => {
-    const date = new Date(isoString)
-    const dateString = date.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' })
-    const timeString = date.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit' })
-    return `${dateString} at ${timeString}`
-  }
-
   // Create a sorted copy for display: `main` branch is always at the top, followed by
   // other branches sorted by `lastModified` (newest first)
   const sortedMetadata = [...metadata].sort((a, b) => {
@@ -281,89 +274,84 @@ function generateIndexHtml(metadata) {
       margin: 0;
       padding: 20px;
       background-color: #f5f5f5;
+      color: #000;
+    }
+    a, a:visited {
+      color: #2563eb;
+    }
+    hr {
+      margin: 20px 0;
+      border: none;
+      border-top: 1px solid #ccc;
     }
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       overflow: hidden;
     }
     .grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 2fr;
-      gap: 1px;
-      background: #e5e7eb;
+      grid-template-columns: max-content 1fr;
+      gap: 0 20px;
     }
     .header {
-      background: #374151;
-      color: white;
-      padding: 15px;
+      padding: 8px 0;
       font-weight: 600;
     }
     .row {
       display: contents;
     }
     .cell {
-      background: white;
-      padding: 15px;
       display: flex;
-    }
-    .branch-name {
-      font-weight: 500;
-      color: #1f2937;
+      flex-direction: column;
+      padding: 8px 0;
     }
     .links {
       display: flex;
-      gap: 15px;
-    }
-    .link {
-      color: #2563eb;
-    }
-    .date {
-      color: #6b7280;
-      font-size: 0.9em;
     }
     .separator {
+      margin: 0 4px;
       color: #9ca3af;
     }
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-      .header:nth-child(2), .cell:nth-child(3n+2) {
-        display: none;
-      }
-      .links {
-        flex-direction: column;
-        gap: 8px;
-      }
-    }
   </style>
+  <script>
+  function formatDate(isoString) {
+    const date = new Date(isoString)
+    const dateString = date.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' })
+    const timeString = date.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit' })
+    return \`\${dateString} at \${timeString}\`
+  }
+
+  // Format all dates on page load so that the time is displayed in the user's local timezone
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.date').forEach(span => {
+      const timestamp = span.getAttribute('data-timestamp')
+      if (timestamp) {
+        span.textContent = formatDate(timestamp)
+      }
+    })
+  })
+  </script>
 </head>
 <body>
   <div class="container">
+    <a href="/latest">Latest production app</a>
+    <hr />
     <div class="grid">
       <div class="header">Branch</div>
-      <div class="header">Links</div>
-      <div class="header">Last Modified</div>
+      <div class="header">Last Updated</div>
 ${sortedMetadata
   .map(
     entry => `
       <div class="row">
         <div class="cell">
           <span class="branch-name">${entry.name}</span>
-        </div>
-        <div class="cell">
           <div class="links">
-            <a href="${entry.app}/" class="link">app</a>
+            <a href="${entry.app}/">app</a>
             <span class="separator">|</span>
-            <a href="${entry.checkReport}/" class="link">check</a>
+            <a href="${entry.checkReport}/">checks</a>
           </div>
         </div>
         <div class="cell">
-          <span class="date">${formatDate(entry.lastModified)}</span>
+          <span class="date" data-timestamp="${entry.lastModified}"></span>
         </div>
       </div>`
   )
