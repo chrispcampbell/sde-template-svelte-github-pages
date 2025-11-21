@@ -6,6 +6,7 @@
  * The `artifacts` directory contains build artifacts for all branches that
  * have been built. The directory structure is as follows:
  *   artifacts/
+ *   ├── index.html             # Top-level index.html file
  *   ├── latest/
  *   |   ├── index.html         # Main branch app
  *   |   ├── assets/            # Main branch assets
@@ -239,9 +240,147 @@ function updateMetadata(branchName, paths) {
   // Sort by lastModified (newest first)
   metadata.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))
 
-  // Write updated metadata
+  // Write updated metadata to `metadata/index.json`
   writeFileSync(metadataFile, JSON.stringify(metadata, null, 2))
   console.log(`Updated metadata for branch '${branchName}'`)
+
+  // Generate top-level `index.html` file
+  generateIndexHtml(metadata)
+}
+
+/**
+ * Generate a top-level index.html file that lists all available branch builds.
+ */
+function generateIndexHtml(metadata) {
+  const indexHtmlPath = joinPath(artifactsDir, 'index.html')
+
+  const formatDate = isoString => {
+    const date = new Date(isoString)
+    const yyyy = date.getFullYear()
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const dd = String(date.getDate()).padStart(2, '0')
+    const hh = String(date.getHours()).padStart(2, '0')
+    const min = String(date.getMinutes()).padStart(2, '0')
+    const ss = String(date.getSeconds()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd} at ${hh}:${min}:${ss}`
+  }
+
+  // Create a sorted copy for display: `main` branch is always at the top, followed by
+  // other branches sorted by `lastModified` (newest first)
+  const sortedMetadata = [...metadata].sort((a, b) => {
+    if (a.name === 'main') return -1
+    if (b.name === 'main') return 1
+    return new Date(b.lastModified) - new Date(a.lastModified)
+  })
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Branch Builds</title>
+  <style>
+    body {
+      font-family: monospace;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 2fr;
+      gap: 1px;
+      background: #e5e7eb;
+    }
+    .header {
+      background: #374151;
+      color: white;
+      padding: 15px;
+      font-weight: 600;
+    }
+    .row {
+      display: contents;
+    }
+    .cell {
+      background: white;
+      padding: 15px;
+      display: flex;
+    }
+    .branch-name {
+      font-weight: 500;
+      color: #1f2937;
+    }
+    .links {
+      display: flex;
+      gap: 15px;
+    }
+    .link {
+      color: #2563eb;
+    }
+    .date {
+      color: #6b7280;
+      font-size: 0.9em;
+    }
+    .separator {
+      color: #9ca3af;
+      margin: 0 4px;
+    }
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .header:nth-child(2), .cell:nth-child(3n+2) {
+        display: none;
+      }
+      .links {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid">
+      <div class="header">Branch</div>
+      <div class="header">Links</div>
+      <div class="header">Last Modified</div>
+${sortedMetadata
+  .map(
+    entry => `
+      <div class="row">
+        <div class="cell">
+          <span class="branch-name">${entry.name}</span>
+        </div>
+        <div class="cell">
+          <div class="links">
+            <a href="${entry.app}/" class="link">app</a>
+            <span class="separator">|</span>
+            <a href="${entry.checkReport}/" class="link">check</a>
+          </div>
+        </div>
+        <div class="cell">
+          <span class="date">${formatDate(entry.lastModified)}</span>
+        </div>
+      </div>`
+  )
+  .join('')}
+    </div>
+  </div>
+</body>
+</html>`
+
+  // Write the HTML content to the `index.html` file
+  writeFileSync(indexHtmlPath, htmlContent)
+  console.log(`Generated top-level index.html`)
 }
 
 main()
