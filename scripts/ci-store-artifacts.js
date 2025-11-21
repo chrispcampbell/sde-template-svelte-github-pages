@@ -178,6 +178,30 @@ function main() {
       cpSync(stagedAppSrcDir, stagedAppDstDir, { recursive: true })
     }
 
+    // Squash commits so that we only keep the most recent 5 commits, but still preserve
+    // the full contents of the `artifacts` branch.  This prevents the artifacts branch
+    // from growing too large.  Note that we keep the latest build for each feature branch
+    // indefinitely, so the the `artifacts` may eventually grow larger than desired.  In
+    // this case, the user can manually remove old branch build artifacts to further
+    // reduce the size of the `artifacts` branch.
+    try {
+      const commitCount = parseInt(execSync('git rev-list --count HEAD', { encoding: 'utf8' }).trim())
+      if (commitCount > 5) {
+        console.log(
+          `Found ${commitCount} commits, squashing older commits to reduce size of '${artifactsBranchName}' branch...`
+        )
+        // Get the hash of the 5th most recent commit (0-indexed, so skip 4)
+        const fifthCommitHash = execSync('git rev-list --skip=4 --max-count=1 HEAD', { encoding: 'utf8' }).trim()
+        // Reset soft to that commit (keeps all changes staged)
+        execSync(`git reset --soft ${fifthCommitHash}`, { stdio: 'inherit' })
+        // Amend the commit to squash everything into one
+        execSync('git commit --amend --no-edit', { stdio: 'inherit' })
+        console.log('Successfully squashed older commits')
+      }
+    } catch (e) {
+      console.log('No commits found or error checking commit history, continuing...')
+    }
+
     // Add all updated files in the `artifacts` directory to git
     execSync(`git add ${artifactsDir}`, { stdio: 'inherit' })
 
@@ -192,9 +216,9 @@ function main() {
       console.log(`Committed artifacts for branch '${branchName}'...`)
     }
 
-    // Push to remote
+    // Push to remote (we do a force push since we may have rewritten history)
     console.log(`Pushing '${artifactsBranchName}' branch to remote...`)
-    execSync(`git push origin ${artifactsBranchName}`, { stdio: 'inherit' })
+    execSync(`git push --force origin ${artifactsBranchName}`, { stdio: 'inherit' })
 
     console.log(`✅ Successfully stored artifacts for branch '${branchName}'`)
   } catch (error) {
