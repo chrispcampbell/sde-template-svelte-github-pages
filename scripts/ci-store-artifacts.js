@@ -256,13 +256,9 @@ function generateIndexHtml(metadata) {
 
   const formatDate = isoString => {
     const date = new Date(isoString)
-    const yyyy = date.getFullYear()
-    const mm = String(date.getMonth() + 1).padStart(2, '0')
-    const dd = String(date.getDate()).padStart(2, '0')
-    const hh = String(date.getHours()).padStart(2, '0')
-    const min = String(date.getMinutes()).padStart(2, '0')
-    const ss = String(date.getSeconds()).padStart(2, '0')
-    return `${yyyy}-${mm}-${dd} at ${hh}:${min}:${ss}`
+    const dateString = date.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' })
+    const timeString = date.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit' })
+    return `${dateString} at ${timeString}`
   }
 
   // Create a sorted copy for display: `main` branch is always at the top, followed by
@@ -331,7 +327,6 @@ function generateIndexHtml(metadata) {
     }
     .separator {
       color: #9ca3af;
-      margin: 0 4px;
     }
     @media (max-width: 768px) {
       .grid {
