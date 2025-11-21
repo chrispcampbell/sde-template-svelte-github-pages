@@ -278,13 +278,7 @@ function updateMetadata(branchName, paths) {
 function generateIndexHtml(metadata) {
   const indexHtmlPath = joinPath(artifactsDir, 'index.html')
 
-  // Create a sorted copy for display: `main` branch is always at the top, followed by
-  // other branches sorted by `lastModified` (newest first)
-  const sortedMetadata = [...metadata].sort((a, b) => {
-    if (a.name === 'main') return -1
-    if (b.name === 'main') return 1
-    return new Date(b.lastModified) - new Date(a.lastModified)
-  })
+  const latestBuildDate = metadata.find(entry => entry.name === 'main')?.lastModified || ''
 
   const htmlContent = `<!DOCTYPE html>
 <html lang="en">
@@ -338,6 +332,9 @@ function generateIndexHtml(metadata) {
   </style>
   <script>
   function formatDate(isoString) {
+    if (isoString.length === 0) {
+      return 'n/a'
+    }
     const date = new Date(isoString)
     const dateString = date.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' })
     const timeString = date.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit' })
@@ -357,12 +354,14 @@ function generateIndexHtml(metadata) {
 </head>
 <body>
   <div class="container">
-    <a href="/latest">Latest production app</a>
+    <a href="latest">Latest production app</a>
+    <br />
+    (last updated: <span class="date" data-timestamp="${latestBuildDate}"></span>)
     <hr />
     <div class="grid">
       <div class="header">Branch</div>
       <div class="header">Last Updated</div>
-${sortedMetadata
+${metadata
   .map(
     entry => `
       <div class="row">
