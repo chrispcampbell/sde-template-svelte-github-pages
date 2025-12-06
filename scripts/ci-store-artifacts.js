@@ -21,20 +21,23 @@
  *   |       ├── app/
  *   |       └── extras/
  *   └── metadata/
- *       └── index.json         # Build metadata
+ *       ├── bundles.json       # Listing of available bundles
+ *       └── index.json         # Listing of available branch builds
  *
  * This script should be called after the artifacts for the current branch have been
  * built.  Typically the branch artifacts will be copied to a `staged` directory, and
  * then this script will copy those branch artifacts into the correct location in the
  * separate `artifacts` branch (an orphan branch that contains all historical artifacts).
  *
- * The `metadata/index.json` file is used to keep track of all available branch builds,
+ * The `metadata/bundles.json` file is used to keep track of all available bundles,
  * mainly for use by the model-check tool, which allows selecting any available bundle.
+ *
+ * The `metadata/index.json` file is used to keep track of all available branch builds.
  *
  * Once updated, the `artifacts` directory can be uploaded to GitHub Pages to make the
  * entire directory structure available at the public URL.
  *
- * Usage: node ci-store-artifacts.js <branch-name> <staged-dir> <check-bundle-dir>
+ * Usage: node ci-store-artifacts.js <branch-name> <staged-dir>
  */
 
 import { execSync } from 'node:child_process'
@@ -48,12 +51,17 @@ const artifactsDir = 'artifacts'
  * Main entry point.
  */
 function main() {
+  const ownerAndRepo = process.env.GITHUB_REPOSITORY
+  if (!ownerAndRepo) {
+    throw new Error('GITHUB_REPOSITORY environment variable must be set')
+  }
+
   const branchName = process.argv[2]
   const stagedDir = process.argv[3]
 
   if (!branchName || !stagedDir) {
     console.error('ERROR: All arguments are required')
-    console.error('Usage: node store-artifacts.js <branch-name> <staged-dir-path>')
+    console.error('Usage: node ci-store-artifacts.js <branch-name> <staged-dir-path>')
     process.exit(1)
   }
 
@@ -65,10 +73,6 @@ function main() {
   try {
     // Check if the project is already set up for GitHub Pages
     console.log('Checking if GitHub Pages is configured for this repo...')
-    const ownerAndRepo = process.env.GITHUB_REPOSITORY
-    if (!ownerAndRepo) {
-      throw new Error('GITHUB_REPOSITORY environment variable must be set')
-    }
     const ghAccept = '"Accept: application/vnd.github+json"'
     const ghApiVersion = '"X-GitHub-Api-Version: 2022-11-28"'
     const ghPagesApiPath = `/repos/${ownerAndRepo}/pages`
@@ -228,30 +232,34 @@ function main() {
 }
 
 /**
- * Update the `metadata/index.json` file with the URL paths for the branch and its artifacts.
+ * Update the `metadata/index.json` file with the URL paths for the branch and its artifacts,
+ * update the `metadata/bundles.json` file with the available bundles, and generate a top-level
+ * `index.html` file that lists all available branch builds.
  */
 function updateMetadata(branchName, paths) {
   const metadataDir = joinPath(artifactsDir, 'metadata')
-  const metadataFile = joinPath(metadataDir, 'index.json')
+  const indexJsonFile = joinPath(metadataDir, 'index.json')
+  const bundlesJsonFile = joinPath(metadataDir, 'bundles.json')
 
   // Create metadata directory if it doesn't exist
   mkdirSync(metadataDir, { recursive: true })
 
-  let metadata = []
-  if (existsSync(metadataFile)) {
+  // Read the existing `index.json` file if it exists
+  let branchEntries = []
+  if (existsSync(indexJsonFile)) {
     try {
-      metadata = JSON.parse(readFileSync(metadataFile, 'utf8'))
+      branchEntries = JSON.parse(readFileSync(indexJsonFile, 'utf8'))
     } catch (e) {
-      console.warn('⚠️ Could not parse existing metadata, starting fresh')
-      metadata = []
+      console.warn('⚠️ Could not parse existing index.json file, starting fresh')
+      branchEntries = []
     }
   }
 
   // Remove existing entry for this branch
-  metadata = metadata.filter(entry => entry.name !== branchName)
+  branchEntries = branchEntries.filter(entry => entry.name !== branchName)
 
-  // Add new entry
-  const newEntry = {
+  // Add a new branch entry
+  const newBranchEntry = {
     name: branchName,
     path: paths.branch,
     app: paths.app,
@@ -259,17 +267,36 @@ function updateMetadata(branchName, paths) {
     checkBundle: paths.checkBundle,
     lastModified: new Date().toISOString()
   }
-  metadata.push(newEntry)
+  branchEntries.push(newBranchEntry)
 
   // Sort by lastModified (newest first)
-  metadata.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))
+  branchEntries.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))
 
-  // Write updated metadata to `metadata/index.json`
-  writeFileSync(metadataFile, JSON.stringify(metadata, null, 2))
+  // Write updated branch metadata to `metadata/index.json`
+  writeFileSync(indexJsonFile, JSON.stringify(branchEntries, null, 2))
+
+  // XXX: For now we store the full URL to the bundle in the `bundles.json` file since
+  // `@sdeverywhere/plugin-check` currently doesn't support relative URLs
+  const [owner, repo] = ownerAndRepo.split('/')
+  const bundleBaseUrl = `https://${owner}.github.io/${repo}`
+
+  // Derive a `bundles.json` file from the branch entries.  The `bundles.json` file
+  // must be in a specific format expected by that the model-check tool
+  const bundleEntries = branchEntries.map(entry => {
+    return {
+      name: entry.name,
+      url: `${bundleBaseUrl}/${entry.checkBundle}`,
+      lastModified: entry.lastModified
+    }
+  })
+
+  // Write updated bundle metadata to `metadata/bundles.json`
+  writeFileSync(bundlesJsonFile, JSON.stringify(bundleEntries, null, 2))
+
   console.log(`Updated metadata for branch '${branchName}'`)
 
   // Generate top-level `index.html` file
-  generateIndexHtml(metadata)
+  generateIndexHtml(branchEntries)
 }
 
 /**
