@@ -175,7 +175,7 @@ function main() {
       checkReport: `${currentBranchUrlPath}/extras/check-compare-to-base`,
       checkBundle: `${currentBranchUrlPath}/extras/check-bundle.js`
     }
-    updateMetadata(ownerAndRepo, branchName, paths)
+    updateMetadata(branchName, paths)
 
     // For main branch, also copy app files to top-level `latest` directory
     if (branchName === 'main') {
@@ -243,7 +243,7 @@ function main() {
  * update the `metadata/bundles.json` file with the available bundles, and generate a top-level
  * `index.html` file that lists all available branch builds.
  */
-function updateMetadata(ownerAndRepo, branchName, paths) {
+function updateMetadata(branchName, paths) {
   const metadataDir = joinPath(artifactsDir, 'metadata')
   const indexJsonFile = joinPath(metadataDir, 'index.json')
   const bundlesJsonFile = joinPath(metadataDir, 'bundles.json')
@@ -282,17 +282,16 @@ function updateMetadata(ownerAndRepo, branchName, paths) {
   // Write updated branch metadata to `metadata/index.json`
   writeFileSync(indexJsonFile, JSON.stringify(branchEntries, null, 2))
 
-  // XXX: For now we store the full URL to the bundle in the `bundles.json` file since
-  // `@sdeverywhere/plugin-check` currently doesn't support relative URLs
-  const [owner, repo] = ownerAndRepo.split('/')
-  const bundleBaseUrl = `https://${owner}.github.io/${repo}`
-
   // Derive a `bundles.json` file from the branch entries.  The `bundles.json` file
   // must be in a specific format expected by that the model-check tool
   const bundleEntries = branchEntries.map(entry => {
     return {
       name: entry.name,
-      url: `${bundleBaseUrl}/${entry.checkBundle}`,
+      // TODO: For now we store the full URL to the bundle in the `bundles.json` file using
+      // the `PUBLISH_BASE_URL` environment variable.  Ideally we could use a relative URL
+      // here instead of encoding the full URL in the `bundles.json` file, but
+      // `@sdeverywhere/plugin-check` currently doesn't understand relative URLs.
+      url: `${publishBaseUrl}/${entry.checkBundle}`,
       lastModified: entry.lastModified
     }
   })
