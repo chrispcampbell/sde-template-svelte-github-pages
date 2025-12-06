@@ -64,7 +64,9 @@ export async function config() {
       }),
 
       // Run model check
-      checkPlugin(),
+      checkPlugin({
+        remoteBundlesUrl: 'https://labonnesoupe.org/sde-template-svelte-github-pages/metadata/bundles.json'
+      }),
 
       // Build or serve the model explorer app
       vitePlugin({
