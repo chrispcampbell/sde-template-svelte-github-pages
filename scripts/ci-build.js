@@ -9,8 +9,8 @@
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 
-// Build the app and model-check reports
-console.log('Building the app...')
+// Build the app and model-check report
+console.log('Building the app and model-check report...')
 execSync('npm run build', { stdio: 'inherit' })
 
 // Remove existing `staged` directory if it exists
@@ -29,7 +29,7 @@ mkdirSync('staged/app', { recursive: true })
 cpSync('packages/app/public', 'staged/app', { recursive: true })
 
 // Copy model-check report from `sde-prep/check-report` to `staged/extras/check-compare-to-base`
-console.log('Copying model-check report...')
+console.log('Copying model-check report files...')
 mkdirSync('staged/extras/check-compare-to-base', { recursive: true })
 cpSync('sde-prep/check-report', 'staged/extras/check-compare-to-base', { recursive: true })
 
