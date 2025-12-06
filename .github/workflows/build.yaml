@@ -42,7 +42,13 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          # XXX: There are issues when this GitHub Actions workflow uses the latest npm version
+          # (11.6.2), see relevant issues:
+          #   https://github.com/npm/cli/issues/8669
+          #   https://github.com/npm/cli/issues/8726
+          # For now, use the latest Node 22, which includes an older npm version that works.
+          #node-version: lts/*
+          node-version: 22
           cache: 'npm'
 
       - name: Validate branch name
