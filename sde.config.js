@@ -1,6 +1,8 @@
 import { dirname, join as joinPath } from 'path'
 import { fileURLToPath } from 'url'
 
+import 'dotenv/config'
+
 import { checkPlugin } from '@sdeverywhere/plugin-check'
 import { configProcessor } from '@sdeverywhere/plugin-config'
 import { vitePlugin } from '@sdeverywhere/plugin-vite'
@@ -12,6 +14,11 @@ const configDir = joinPath(__dirname, 'config')
 const packagePath = (...parts) => joinPath(__dirname, 'packages', ...parts)
 const appPath = (...parts) => packagePath('app', ...parts)
 const corePath = (...parts) => packagePath('core', ...parts)
+
+const publishBaseUrl = process.env.PUBLISH_BASE_URL
+if (!publishBaseUrl) {
+  throw new Error('PUBLISH_BASE_URL environment variable must be set (see top-level .env file)')
+}
 
 //
 // NOTE: This template can generate a model as a WebAssembly module (runs faster,
@@ -65,7 +72,7 @@ export async function config() {
 
       // Run model check
       checkPlugin({
-        remoteBundlesUrl: 'https://labonnesoupe.org/sde-template-svelte-github-pages/metadata/bundles.json'
+        remoteBundlesUrl: `${publishBaseUrl}/metadata/bundles.json`
       }),
 
       // Build or serve the model explorer app

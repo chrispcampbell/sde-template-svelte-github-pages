@@ -44,6 +44,8 @@ import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, cpSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join as joinPath } from 'node:path'
 
+import 'dotenv/config'
+
 const artifactsBranchName = 'artifacts'
 const artifactsDir = 'artifacts'
 
@@ -54,6 +56,11 @@ function main() {
   const ownerAndRepo = process.env.GITHUB_REPOSITORY
   if (!ownerAndRepo) {
     throw new Error('GITHUB_REPOSITORY environment variable must be set')
+  }
+
+  const publishBaseUrl = process.env.PUBLISH_BASE_URL
+  if (!publishBaseUrl) {
+    throw new Error('PUBLISH_BASE_URL environment variable must be set (see top-level .env file)')
   }
 
   const branchName = process.argv[2]
