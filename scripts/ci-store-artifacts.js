@@ -175,7 +175,7 @@ function main() {
       checkReport: `${currentBranchUrlPath}/extras/check-compare-to-base`,
       checkBundle: `${currentBranchUrlPath}/extras/check-bundle.js`
     }
-    updateMetadata(branchName, paths)
+    updateMetadata(publishBaseUrl, branchName, paths)
 
     // For main branch, also copy app files to top-level `latest` directory
     if (branchName === 'main') {
@@ -243,7 +243,7 @@ function main() {
  * update the `metadata/bundles.json` file with the available bundles, and generate a top-level
  * `index.html` file that lists all available branch builds.
  */
-function updateMetadata(branchName, paths) {
+function updateMetadata(publishBaseUrl, branchName, paths) {
   const metadataDir = joinPath(artifactsDir, 'metadata')
   const indexJsonFile = joinPath(metadataDir, 'index.json')
   const bundlesJsonFile = joinPath(metadataDir, 'bundles.json')
