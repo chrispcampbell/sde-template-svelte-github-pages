@@ -1,5 +1,6 @@
 artifacts
 baselines
+bundles
 node_modules
 sde-prep
 staged
