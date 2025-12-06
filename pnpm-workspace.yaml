@@ -1,6 +1,11 @@
 packages:
   - packages/*
 
+# Override specific package versions
+overrides:
+  '@sdeverywhere/check-ui-shell': climateinteractive/gitpkg-registry-public#sde-check-ui-shell-e7d8bed
+  '@sdeverywhere/plugin-check': climateinteractive/gitpkg-registry-public#sde-plugin-check-e7d8bed
+
 # Ignore certain optional dependencies that aren't needed for this project
 ignoredOptionalDependencies:
   - '@parcel/watcher'

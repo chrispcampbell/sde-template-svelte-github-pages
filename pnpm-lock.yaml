@@ -4,6 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@sdeverywhere/check-ui-shell': climateinteractive/gitpkg-registry-public#sde-check-ui-shell-e7d8bed
+  '@sdeverywhere/plugin-check': climateinteractive/gitpkg-registry-public#sde-plugin-check-e7d8bed
+
 importers:
 
   .:
@@ -21,8 +25,8 @@ importers:
         specifier: ^0.7.34
         version: 0.7.36
       '@sdeverywhere/plugin-check':
-        specifier: ^0.3.18
-        version: 0.3.20(@sdeverywhere/build@0.3.7)(@types/node@24.10.1)(sass@1.94.2)(svelte@5.45.5)(yaml@2.8.2)
+        specifier: climateinteractive/gitpkg-registry-public#sde-plugin-check-e7d8bed
+        version: https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/0df362e06250788dc202beb910474450e773b12f(@sdeverywhere/build@0.3.7)(@types/node@24.10.1)(sass@1.94.2)(svelte@5.45.5)(yaml@2.8.2)
       '@sdeverywhere/plugin-config':
         specifier: ^0.2.8
         version: 0.2.8(@sdeverywhere/build@0.3.7)
@@ -471,16 +475,16 @@ packages:
   '@formatjs/intl-localematcher@0.6.2':
     resolution: {integrity: sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==}
 
-  '@fortawesome/fontawesome-common-types@6.7.2':
-    resolution: {integrity: sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==}
+  '@fortawesome/fontawesome-common-types@7.1.0':
+    resolution: {integrity: sha512-l/BQM7fYntsCI//du+6sEnHOP6a74UixFyOYUyz2DLMXKx+6DEhfR3F2NYGE45XH1JJuIamacb4IZs9S0ZOWLA==}
     engines: {node: '>=6'}
 
-  '@fortawesome/free-regular-svg-icons@6.7.2':
-    resolution: {integrity: sha512-7Z/ur0gvCMW8G93dXIQOkQqHo2M5HLhYrRVC0//fakJXxcF1VmMPsxnG6Ee8qEylA8b8Q3peQXWMNZ62lYF28g==}
+  '@fortawesome/free-regular-svg-icons@7.1.0':
+    resolution: {integrity: sha512-0e2fdEyB4AR+e6kU4yxwA/MonnYcw/CsMEP9lH82ORFi9svA6/RhDyhxIv5mlJaldmaHLLYVTb+3iEr+PDSZuQ==}
     engines: {node: '>=6'}
 
-  '@fortawesome/free-solid-svg-icons@6.7.2':
-    resolution: {integrity: sha512-GsBrnOzU8uj0LECDfD5zomZJIjrPhIlWU82AHwa2s40FKH+kcxQaBvBo3Z4TxyZHIyX8XTDxsyA33/Vx9eFuQA==}
+  '@fortawesome/free-solid-svg-icons@7.1.0':
+    resolution: {integrity: sha512-Udu3K7SzAo9N013qt7qmm22/wo2hADdheXtBfxFTecp+ogsc0caQNRKEb7pkvvagUGOpG9wJC1ViH6WXs8oXIA==}
     engines: {node: '>=6'}
 
   '@humanfs/core@0.19.1':
@@ -676,8 +680,9 @@ packages:
   '@sdeverywhere/check-core@0.1.6':
     resolution: {integrity: sha512-CdO78d7mOhqofAAG/hoq/l6dWUFTJ1n4YiU162QtyzG9v6jYg4+JIXYlSpVYg2/cNUAOM7uYkbyyWgNqLYdSug==}
 
-  '@sdeverywhere/check-ui-shell@0.2.12':
-    resolution: {integrity: sha512-iSed+G8au1ggXWYljjSyks2Ggtv4FPjfXtaMqoeyPBT4lZoAQuX9Dq8gq0kn0tdziqVKKIjw0noiDgTk5HzSrw==}
+  '@sdeverywhere/check-ui-shell@https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/864a94b35da64b38719cb3a47bb2095b0e95205a':
+    resolution: {tarball: https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/864a94b35da64b38719cb3a47bb2095b0e95205a}
+    version: 0.2.12
 
   '@sdeverywhere/cli@0.7.36':
     resolution: {integrity: sha512-lMOK5xy3PklfD/WZkzCcBQIctpkkoOQHEanjvOy29IQokyU4WdWw2CEwM3e6SRuu+3CaKzqB1KZTvuZAsErs2w==}
@@ -690,8 +695,9 @@ packages:
   '@sdeverywhere/parse@0.1.2':
     resolution: {integrity: sha512-8/WQhdG9xxik4k1aU2rksPeNj5rMRKv2mVHwyg2RCDB77JeG2f/3GNTMBzn9R7D1L4ZAXFZ1/pbaw2WELwL22w==}
 
-  '@sdeverywhere/plugin-check@0.3.20':
-    resolution: {integrity: sha512-EZnMg9vswMmxwcopABX0eVsy5bw41buq4YWKNog3diOCCpQFisx2T7KyqNixD/gViAdmSk6ZS2CdsLkXw3vU3A==}
+  '@sdeverywhere/plugin-check@https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/0df362e06250788dc202beb910474450e773b12f':
+    resolution: {tarball: https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/0df362e06250788dc202beb910474450e773b12f}
+    version: 0.3.20
     hasBin: true
     peerDependencies:
       '@sdeverywhere/build': ^0.3.7
@@ -1330,6 +1336,9 @@ packages:
 
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
+
+  fuzzysort@3.1.0:
+    resolution: {integrity: sha512-sR9BNCjBg6LNgwvxlBd0sBABvQitkLzoVY9MYYROQVX/FvfJ4Mai9LsGhDgd8qYdds0bY77VzYd5iuB+v5rwQQ==}
 
   generator-function@2.0.1:
     resolution: {integrity: sha512-SFdFmIJi+ybC0vjlHN0ZGVGHc3lgE0DxPAT0djjVg+kjOnSqclqmj0KQ7ykTOLP6YxoqOvuAODGdcHJn+43q3g==}
@@ -2579,15 +2588,15 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@fortawesome/fontawesome-common-types@6.7.2': {}
+  '@fortawesome/fontawesome-common-types@7.1.0': {}
 
-  '@fortawesome/free-regular-svg-icons@6.7.2':
+  '@fortawesome/free-regular-svg-icons@7.1.0':
     dependencies:
-      '@fortawesome/fontawesome-common-types': 6.7.2
+      '@fortawesome/fontawesome-common-types': 7.1.0
 
-  '@fortawesome/free-solid-svg-icons@6.7.2':
+  '@fortawesome/free-solid-svg-icons@7.1.0':
     dependencies:
-      '@fortawesome/fontawesome-common-types': 6.7.2
+      '@fortawesome/fontawesome-common-types': 7.1.0
 
   '@humanfs/core@0.19.1': {}
 
@@ -2750,16 +2759,17 @@ snapshots:
       neverthrow: 4.4.2
       yaml: 2.8.2
 
-  '@sdeverywhere/check-ui-shell@0.2.12(svelte@5.45.5)':
+  '@sdeverywhere/check-ui-shell@https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/864a94b35da64b38719cb3a47bb2095b0e95205a(svelte@5.45.5)':
     dependencies:
-      '@fortawesome/free-regular-svg-icons': 6.7.2
-      '@fortawesome/free-solid-svg-icons': 6.7.2
+      '@fortawesome/free-regular-svg-icons': 7.1.0
+      '@fortawesome/free-solid-svg-icons': 7.1.0
       '@juggle/resize-observer': 3.4.0
       '@sdeverywhere/check-core': 0.1.6
       assert-never: 1.4.0
       chart.js: 2.9.4
       copy-text-to-clipboard: 3.2.2
       fontfaceobserver: 2.3.0
+      fuzzysort: 3.1.0
       svelte-dnd-action: 0.9.68(svelte@5.45.5)
     transitivePeerDependencies:
       - svelte
@@ -2793,13 +2803,13 @@ snapshots:
       assert-never: 1.4.0
       split-string: 6.1.0
 
-  '@sdeverywhere/plugin-check@0.3.20(@sdeverywhere/build@0.3.7)(@types/node@24.10.1)(sass@1.94.2)(svelte@5.45.5)(yaml@2.8.2)':
+  '@sdeverywhere/plugin-check@https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/0df362e06250788dc202beb910474450e773b12f(@sdeverywhere/build@0.3.7)(@types/node@24.10.1)(sass@1.94.2)(svelte@5.45.5)(yaml@2.8.2)':
     dependencies:
       '@rollup/plugin-node-resolve': 13.3.0(rollup@2.79.2)
       '@rollup/plugin-replace': 6.0.3(rollup@2.79.2)
       '@sdeverywhere/build': 0.3.7
       '@sdeverywhere/check-core': 0.1.6
-      '@sdeverywhere/check-ui-shell': 0.2.12(svelte@5.45.5)
+      '@sdeverywhere/check-ui-shell': https://codeload.github.com/climateinteractive/gitpkg-registry-public/tar.gz/864a94b35da64b38719cb3a47bb2095b0e95205a(svelte@5.45.5)
       '@sdeverywhere/runtime': 0.2.7
       '@sdeverywhere/runtime-async': 0.2.7
       assert-never: 1.4.0
@@ -3680,6 +3690,8 @@ snapshots:
       is-callable: 1.2.7
 
   functions-have-names@1.2.3: {}
+
+  fuzzysort@3.1.0: {}
 
   generator-function@2.0.1: {}
 
