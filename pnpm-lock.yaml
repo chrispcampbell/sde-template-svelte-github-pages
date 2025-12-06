@@ -19,10 +19,10 @@ importers:
         specifier: ^0.3.7
         version: 0.3.7
       '@sdeverywhere/check-core':
-        specifier: ^0.1.5
+        specifier: ^0.1.6
         version: 0.1.6
       '@sdeverywhere/cli':
-        specifier: ^0.7.34
+        specifier: ^0.7.36
         version: 0.7.36
       '@sdeverywhere/plugin-check':
         specifier: climateinteractive/gitpkg-registry-public#sde-plugin-check-e7d8bed
