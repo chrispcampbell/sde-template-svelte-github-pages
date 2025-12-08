@@ -18,7 +18,7 @@
     "@sdeverywhere/build": "^0.3.7",
     "@sdeverywhere/check-core": "^0.1.6",
     "@sdeverywhere/cli": "^0.7.36",
-    "@sdeverywhere/plugin-check": "github:climateinteractive/gitpkg-registry-public#sde-plugin-check-c93b50a",
+    "@sdeverywhere/plugin-check": "github:climateinteractive/gitpkg-registry-public#sde-plugin-check-40bcb21",
     "@sdeverywhere/plugin-config": "^0.2.8",
     "@sdeverywhere/plugin-vite": "^0.2.0",
     "@sdeverywhere/plugin-wasm": "^0.2.6",
