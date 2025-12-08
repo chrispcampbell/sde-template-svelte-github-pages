@@ -20,6 +20,31 @@ if (!publishBaseUrl) {
   throw new Error('PUBLISH_BASE_URL environment variable must be set (see top-level .env file)')
 }
 
+// Configure the name of the branch that is used as the baseline for comparisons
+// when building the model-check report that is published to the web server
+const baseBranchName = 'main'
+const baseBranchBundleUrl = `${publishBaseUrl}/branch/${baseBranchName}/extras/check-bundle.js`
+
+// If building the model-check report that is published to the web server, configure
+// the baseline and current bundle options
+let baselineBundle
+let currentBundle
+if (process.env.NODE_ENV !== 'development') {
+  // Configure the baseline bundle that is used for comparisons when building the
+  // model-check report (in local development mode, we leave this undefined since
+  // the local report allows the user to choose bundles at runtime)
+  baselineBundle = {
+    name: baseBranchName,
+    url: baseBranchBundleUrl
+  }
+
+  // Use the current branch name as the "current" bundle name, otherwise (in local
+  // development mode) leave it undefined so that the default value is used
+  currentBundle = {
+    name: process.env.GITHUB_REF_NAME || 'current'
+  }
+}
+
 //
 // NOTE: This template can generate a model as a WebAssembly module (runs faster,
 // but requires additional tools to be installed) or in pure JavaScript format (runs
@@ -72,6 +97,8 @@ export async function config() {
 
       // Run model check
       checkPlugin({
+        baseline: baselineBundle,
+        current: currentBundle,
         remoteBundlesUrl: `${publishBaseUrl}/metadata/bundles.json`
       }),
 
