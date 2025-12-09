@@ -18,8 +18,9 @@
     "@sdeverywhere/build": "^0.3.7",
     "@sdeverywhere/check-core": "^0.1.6",
     "@sdeverywhere/cli": "^0.7.36",
-    "@sdeverywhere/plugin-check": "github:climateinteractive/gitpkg-registry-public#sde-plugin-check-40bcb21",
+    "@sdeverywhere/plugin-check": "^0.3.21",
     "@sdeverywhere/plugin-config": "^0.2.8",
+    "@sdeverywhere/plugin-deploy": "github:climateinteractive/gitpkg-registry-public#sde-plugin-deploy-d2b0f6c",
     "@sdeverywhere/plugin-vite": "^0.2.0",
     "@sdeverywhere/plugin-wasm": "^0.2.6",
     "@sdeverywhere/plugin-worker": "^0.2.11",
@@ -34,8 +35,5 @@
     "prettier": "^3.6.2",
     "prettier-plugin-svelte": "^3.4.0",
     "typescript": "^5.2.2"
-  },
-  "overrides": {
-    "@sdeverywhere/check-ui-shell": "github:climateinteractive/gitpkg-registry-public#sde-check-ui-shell-d72f983"
   }
 }
