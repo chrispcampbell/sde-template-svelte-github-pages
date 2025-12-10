@@ -34,8 +34,8 @@ import { workerPlugin } from '@sdeverywhere/plugin-worker'
 //   baseUrl: 'https://sdmodeler123.com/projects/my-model'
 //
 // const deployBaseUrl = 'https://{GH_USERNAME_OR_ORG}.github.io/{GH_REPO_NAME}'
-// const deployBaseUrl = undefined
-const deployBaseUrl = 'https://labonnesoupe.org/sde-template-svelte-github-pages'
+const deployBaseUrl = undefined
+// const deployBaseUrl = 'https://labonnesoupe.org/sde-template-svelte-github-pages'
 
 // If building the model-check report that is deployed to the web server, configure
 // the baseline and current bundle options

@@ -59,17 +59,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./scripts/ci-build.js
 
+      - name: Check for deploy directory
+        id: check-deploy
+        run: |
+          # Set an environment variable to true if the `deployPlugin`
+          # step wrote build products.  If `deployPlugin` was disabled,
+          # we will skip the remaining steps in this job (i.e., we will
+          # not deploy to GitHub Pages).
+          if [ -d "./sde-prep/deploy" ]; then
+            echo "products_updated=true" >> $GITHUB_OUTPUT
+          else
+            echo "products_updated=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Check out artifacts branch
+        if: steps.check-deploy.outputs.products_updated == 'true'
         run: git checkout artifacts
 
       - name: Set up GitHub Pages
+        if: steps.check-deploy.outputs.products_updated == 'true'
         uses: actions/configure-pages@v5
 
       - name: Upload GitHub Pages artifacts
+        if: steps.check-deploy.outputs.products_updated == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: './artifacts'
 
       - name: Deploy to GitHub Pages
+        if: steps.check-deploy.outputs.products_updated == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
