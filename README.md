@@ -70,7 +70,7 @@ This project automatically publishes your simulator and model-check reports to a
 - **Other branches**: Each branch gets its own URL (e.g., `https://yourusername.github.io/your-project-name/branch/feature-name`)
   - The app build for the branch is available at `https://yourusername.github.io/your-project-name/branch/feature-name/app`
   - A model-check report that compares the branch to the latest `main` build will be available at `https://yourusername.github.io/your-project-name/branch/feature-name/extras/check-compare-to-base`
-  - The model-check bundle file will be available `https://yourusername.github.io/your-project-name/branch/feature-name/extras/check-bundle.js`
+  - The model-check bundle file will be available at `https://yourusername.github.io/your-project-name/branch/feature-name/extras/check-bundle.js`
 
 ### Sharing Your Work
 

@@ -17,9 +17,12 @@ const corePath = (...parts) => packagePath('core', ...parts)
 // Set the base URL for the deployed project.  This is used for determining the URLs
 // for remote bundle files used by model-check and for other purposes.
 //
-// By default, this project is configured to publish automatically on GitHub Pages,
-// so you should set `deployBaseUrl` using the following template (replace the
-// {GH} placeholders with the actual values):
+// If you leave this undefined, the `deployPlugin` step will be disabled, and the
+// project will not be automatically deployed to GitHub Pages.
+//
+// If `deployBaseUrl` is defined, this project will be deployed automatically to
+// GitHub Pages every time you push changes to GitHub.  You should set `deployBaseUrl`
+// using the following template (replace the {GH} placeholders with the actual values):
 //   baseUrl = 'https://{GH_USERNAME_OR_ORG}.github.io/{GH_REPO_NAME}'
 //
 // For example, if your GitHub username is "sdmodeler123", and your GitHub repository
@@ -35,18 +38,19 @@ const corePath = (...parts) => packagePath('core', ...parts)
 // directory structure, you can update this variable to suit your needs, for example:
 //   baseUrl: 'https://sdmodeler123.com/projects/my-model'
 // const deployBaseUrl = 'https://{GH_USERNAME_OR_ORG}.github.io/{GH_REPO_NAME}'
+// const deployBaseUrl = undefined
 const deployBaseUrl = 'https://labonnesoupe.org/sde-template-svelte-github-pages'
-
-// Configure the name of the branch that is used as the baseline for comparisons
-// when building the model-check report that is deployed to the web server
-const baseBranchName = 'main'
-const baseBranchBundleUrl = `${deployBaseUrl}/branch/${baseBranchName}/extras/check-bundle.js`
 
 // If building the model-check report that is deployed to the web server, configure
 // the baseline and current bundle options
 let baselineBundle
 let currentBundle
-if (process.env.NODE_ENV !== 'development') {
+if (deployBaseUrl && process.env.NODE_ENV !== 'development') {
+  // Configure the name of the branch that is used as the baseline for comparisons
+  // when building the model-check report that is deployed to the web server
+  const baseBranchName = 'main'
+  const baseBranchBundleUrl = `${deployBaseUrl}/branch/${baseBranchName}/extras/check-bundle.js`
+
   // Configure the baseline bundle that is used for comparisons when building the
   // model-check report (in local development mode, we leave this undefined since
   // the local report allows the user to choose bundles at runtime)
@@ -116,7 +120,7 @@ export async function config() {
       checkPlugin({
         baseline: baselineBundle,
         current: currentBundle,
-        remoteBundlesUrl: `${deployBaseUrl}/metadata/bundles.json`
+        remoteBundlesUrl: deployBaseUrl && `${deployBaseUrl}/metadata/bundles.json`
       }),
 
       // Build or serve the model explorer app
@@ -130,10 +134,14 @@ export async function config() {
         }
       }),
 
-      // Deploy the app and model-check report to GitHub Pages
-      deployPlugin({
-        baseUrl: deployBaseUrl
-      })
+      // Deploy the app and model-check report to GitHub Pages (only if `deployBaseUrl` is defined)
+      ...(deployBaseUrl
+        ? [
+            deployPlugin({
+              baseUrl: deployBaseUrl
+            })
+          ]
+        : [])
     ]
   }
 }
