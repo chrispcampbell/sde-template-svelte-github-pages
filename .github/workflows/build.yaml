@@ -49,9 +49,7 @@ jobs:
           # For now, use the latest Node 22, which includes an older npm version that works.
           #node-version: lts/*
           node-version: 22
-          # XXX: Disable npm caching temporarily to work around issue with optional dependencies:
-          #   https://github.com/npm/cli/issues/4828
-          #cache: 'npm'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
