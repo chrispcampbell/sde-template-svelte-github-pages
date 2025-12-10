@@ -3,7 +3,6 @@ baselines
 bundles
 node_modules
 sde-prep
-staged
 *.vdf
 *.vdfx
 *.3vmfx
