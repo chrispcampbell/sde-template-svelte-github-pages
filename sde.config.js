@@ -8,12 +8,7 @@ import { vitePlugin } from '@sdeverywhere/plugin-vite'
 import { wasmPlugin } from '@sdeverywhere/plugin-wasm'
 import { workerPlugin } from '@sdeverywhere/plugin-worker'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const configDir = joinPath(__dirname, 'config')
-const packagePath = (...parts) => joinPath(__dirname, 'packages', ...parts)
-const appPath = (...parts) => packagePath('app', ...parts)
-const corePath = (...parts) => packagePath('core', ...parts)
-
+//
 // Set the base URL for the deployed project.  This is used for determining the URLs
 // for remote bundle files used by model-check and for other purposes.
 //
@@ -37,6 +32,7 @@ const corePath = (...parts) => packagePath('core', ...parts)
 // If you use a different host/server (AWS, GitLab, etc) or publish to a different
 // directory structure, you can update this variable to suit your needs, for example:
 //   baseUrl: 'https://sdmodeler123.com/projects/my-model'
+//
 // const deployBaseUrl = 'https://{GH_USERNAME_OR_ORG}.github.io/{GH_REPO_NAME}'
 // const deployBaseUrl = undefined
 const deployBaseUrl = 'https://labonnesoupe.org/sde-template-svelte-github-pages'
@@ -81,6 +77,12 @@ if (deployBaseUrl && process.env.NODE_ENV !== 'development') {
 // in the browser or in Node.js without the additional Emscripten build step.
 //
 const genFormat = 'js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const configDir = joinPath(__dirname, 'config')
+const packagePath = (...parts) => joinPath(__dirname, 'packages', ...parts)
+const appPath = (...parts) => packagePath('app', ...parts)
+const corePath = (...parts) => packagePath('core', ...parts)
 
 export async function config() {
   return {
